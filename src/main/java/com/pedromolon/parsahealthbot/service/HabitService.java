@@ -26,7 +26,7 @@ public class HabitService {
 
     @Transactional
     public Habit createHabit(Long chatId, String firstName, String habitName) {
-        UserAccount user = userService.getOrCreateUser(chatId, firstName);
+        UserAccount user = userService.createUser(chatId, firstName);
 
         Habit habit = Habit.builder()
                 .userAccount(user)
