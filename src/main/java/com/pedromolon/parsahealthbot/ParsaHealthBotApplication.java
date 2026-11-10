@@ -13,9 +13,8 @@ public class ParsaHealthBotApplication {
                 .load();
 
         dotenv.entries().forEach(entry -> {
-                    System.setProperty(entry.getKey(), entry.getValue());
-                }
-        );
+            System.setProperty(entry.getKey(), entry.getValue());
+        });
 
         SpringApplication.run(ParsaHealthBotApplication.class, args);
     }
