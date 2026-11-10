@@ -1,0 +1,6 @@
+CREATE TABLE tb_account_table (
+    chat_id BIGINT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    time_zone VARCHAR(50) NOT NULL DEFAULT 'America/Sao_Paulo',
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
