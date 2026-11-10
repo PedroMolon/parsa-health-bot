@@ -59,6 +59,24 @@ public class HabitService {
         return habitLogRepository.save(habitLog);
     }
 
+    @Transactional
+    public HabitLog checkInHabitByName(Long chatId, String habitName) {
+        List<Habit> activeHabits = habitRepository.findActiveHabitsByChatId(chatId);
+
+        Habit habitToComplete = activeHabits.stream()
+                        .filter(h -> h.getName().equalsIgnoreCase(habitName.trim()))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("Hábito não encontrado"));
+
+        HabitLog log = HabitLog.builder()
+                .habit(habitToComplete)
+                .userAccount(habitToComplete.getUserAccount())
+                .completedAt(OffsetDateTime.now())
+                .build();
+
+        return habitLogRepository.save(log);
+    }
+
     public List<HabitLog> getTodayLogs(Long chatId) {
         OffsetDateTime startOfDay = OffsetDateTime.now().toLocalDate().atStartOfDay(OffsetDateTime.now().getOffset()).toOffsetDateTime();
         OffsetDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);

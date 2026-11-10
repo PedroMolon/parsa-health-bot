@@ -66,7 +66,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                     "/start - Iniciar o bot\n" +
                     "/help - Exibir ajuda\n" +
                     "/createHabit <nomes> - Criar um novo hábito\n" +
-                    "/habits - Listas seus hábitos ativos");
+                    "/habits - Listas seus hábitos ativos\n" +
+                    "/check - Marcar um hábito como realizado");
 
         } else if (messageText.startsWith("/createHabit")) {
             String habitName = messageText.replaceFirst("/createHabit" , "").trim();
@@ -90,8 +91,23 @@ public class TelegramBot extends TelegramLongPollingBot {
                sendMessage(chatId, sb.toString());
            }
 
+        } else if (messageText.startsWith("/check")) {
+            String habitName = messageText.replaceFirst("/check" , "").trim();
+
+            if (habitName.isEmpty()) {
+                sendMessage(chatId, "⚠️ Por favor, informe o nome do hábito. Exemplo: /check Correr");
+            } else {
+                try {
+                    habitService.checkInHabitByName(chatId, habitName);
+                    sendMessage(chatId, "🔥 Boa! Hábito \"" + habitName + "\" concluído com sucesso hoje!");
+                } catch (IllegalArgumentException e) {
+                    sendMessage(chatId, "⚠️ Hábito não encontrado. Verifique o nome e tente novamente.");
+                }
+            }
+
         } else {
-            sendMessage(chatId, "Comando não reconhecido. Use /help para ver os comandos disponíveis.");        }
+            sendMessage(chatId, "Comando não reconhecido. Use /help para ver os comandos disponíveis.");
+        }
     }
 
 }
