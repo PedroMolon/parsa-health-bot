@@ -1,9 +1,7 @@
 package com.pedromolon.parsahealthbot.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.pedromolon.parsahealthbot.model.enums.ActivityLevel;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +10,7 @@ import lombok.Setter;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "tb_account_table")
+@Table(name = "tb_user_accounts")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,6 +23,20 @@ public class UserAccount {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(columnDefinition = "NUMERIC(5, 2)")
+    private Double weight;
+
+    private Integer height;
+
+    private Integer age;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "activity_level")
+    private ActivityLevel activityLevel;
+
+    @Column(name = "daily_water_goal_ml")
+    private Integer dailyWaterGoalMl;
 
     @Column(name = "time_zone", nullable = false)
     private String timeZone = "America/Sao_Paulo";
