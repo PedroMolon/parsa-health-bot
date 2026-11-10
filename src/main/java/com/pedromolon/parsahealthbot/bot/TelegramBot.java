@@ -41,7 +41,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             String messageText = update.getMessage().getText();
             String firstName = update.getMessage().getChat().getFirstName();
 
-            userService.createUser(chatId, firstName);
+            userService.getOrCreate(chatId, firstName);
 
             routeCommand(messageText, chatId, firstName);
         }
@@ -64,7 +64,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             handleStart(chatId, firstName);
         } else if (messageText.startsWith("/help")) {
             handleHelp(chatId);
-        } else if (messageText.startsWith("/createHabit")) {
+        } else if (messageText.startsWith("/createhabit")) {
             handleCreateHabit(messageText, chatId, firstName);
         } else if (messageText.equals("/habits")) {
             handleListHabits(chatId);
@@ -89,7 +89,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 "• `/setprofile <peso> <altura_cm> <idade> <nivel>` - Configura seus dados\n" +
                 "• `/profile` - Exibe seus dados atuais e meta de água\n\n" +
                 "📋 **Gestão de Hábitos:**\n" +
-                "• `/createHabit <nome>` - Criar um novo hábito\n" +
+                "• `/createhabit <nome>` - Criar um novo hábito\n" +
                 "• `/habits` - Listar seus hábitos ativos\n" +
                 "• `/check <nome>` - Marcar hábito como realizado hoje\n\n" +
                 "⚙️ **Sistema:**\n" +
@@ -111,7 +111,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         var habits = habitService.getActiveHabits(chatId);
 
         if (habits.isEmpty()) {
-            sendMessage(chatId, "⚠️ Você não possui hábitos ativos. Use `/createHabit <nome>` para criar um.");
+            sendMessage(chatId, "⚠️ Você não possui hábitos ativos. Use `/createhabit <nome>` para criar um.");
         } else {
             StringBuilder sb = new StringBuilder("📋 **Seus Hábitos Ativos:**\n\n");
             for (var habit : habits) {

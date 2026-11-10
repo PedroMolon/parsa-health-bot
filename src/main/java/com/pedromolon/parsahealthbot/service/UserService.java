@@ -5,8 +5,7 @@ import com.pedromolon.parsahealthbot.model.UserAccount;
 import com.pedromolon.parsahealthbot.model.enums.ActivityLevel;
 import com.pedromolon.parsahealthbot.repository.UserAccountRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -17,21 +16,24 @@ public class UserService {
         this.userAccountRepository = userAccountRepository;
     }
 
-    public UserAccount createUser(Long chatId, String username) {
-        String name = username != null ? username : "Usuário";
-
-        UserAccount newUser = new UserAccount(chatId, name);
-
-        return userAccountRepository.save(newUser);
+    @Transactional
+    public UserAccount getOrCreate(Long chatId, String username) {
+        return userAccountRepository.findById(chatId)
+                .orElseGet(() -> {
+                    String name = username != null ? username : "Usuário";
+                    UserAccount newUser = new UserAccount();
+                    newUser.setChatId(chatId);
+                    newUser.setName(name);
+                    return userAccountRepository.save(newUser);
+                });
     }
 
     public UserAccount getUser(Long chatId) {
-        Optional<UserAccount> existingUser = Optional.of(userAccountRepository.findById(chatId)
-                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado")));
-
-        return existingUser.get();
+        return userAccountRepository.findById(chatId)
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
     }
 
+    @Transactional
     public UserAccount updateUserProfile(Long chatId, Double weight, Integer height, Integer age, ActivityLevel activityLevel) {
         UserAccount user = userAccountRepository.findById(chatId)
                 .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
@@ -47,7 +49,9 @@ public class UserService {
         }
         user.setDailyWaterGoalMl(baseWaterMl);
 
-        return userAccountRepository.save(user);
+        userAccountRepository.save(user);
+
+        return user;
     }
 
 }
